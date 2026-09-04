@@ -1,0 +1,70 @@
+import pandas as pd
+#uploading the file **************************************************
+df = pd.read_csv("discord_ecosystem_2026.csv")
+print(df.head())
+print(df.shape)
+print(df.columns)
+print(df.info())
+'''
+import os
+print("python is looking for")
+print(os.getcwd())
+print("\n files in the folder:")
+print(os.listdir())'''
+
+#data cleaning************************************************
+print("missing values:")
+print(df.isnull().sum())
+df["description"]=df['description'].fillna("Not Available")
+df["homepage"]=df['homepage'].fillna("Not Available ")
+df["language"]=df["language"].fillna("Not Available")
+df['license']=df["license"].fillna("Not Available")
+df["topics"]=df["topics"].fillna("Not Available")
+#checking again
+print("\nmissing values:")
+print(df.isnull().sum())
+#check for duplicates
+print("\nDuplicate values:")
+print(df.duplicated().sum())
+#checking for unique id
+print("\n Duplicate repository IDs:")
+print(df['id'].duplicated().sum())
+# fixing the date columns
+df['created_at']=pd.to_datetime(df["created_at"])
+df["updated_at"]=pd.to_datetime(df["updated_at"])
+df["pushed_at"]=pd.to_datetime(df["pushed_at"])
+print("\n data types after conversion:")
+print(df[["created_at","updated_at","pushed_at"]].dtypes)
+#EDA************************************************
+print(df.describe())
+#repositories having most stars***************************************
+top_repos=df.sort_values("stars",ascending=False).head(10)#arrranging values from high to low
+print(top_repos[["name","stars"]])
+#turning our result into a visual rep using matplotlib
+"""import matplotlib.pyplot as plt
+lang_counts=df["language"].value_counts().head(10)
+lang_counts.plot(kind="bar")
+plt.title("top programming languages")
+plt.xlabel("programming language")
+plt.ylabel("Number of Repos")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+#star vs forks***************************************
+plt.scatter(df["stars"],df["forks"])
+plt.title("stars vs forks")
+plt.xlabel("Number of Stars")
+plt.ylabel("Number of Forks")
+plt.show()"""
+# which year has the most repository created
+df["Created_year"]=df["created_at"].dt.year
+print(df["Created_year"].value_counts().sort_index())
+#inactive repos
+inactive = df[df["days_since_last_push"] > 365]
+print("Inactive repositories:", len(inactive))
+print(df["is_official_discord"].value_counts())
+print(df["is_fork"].value_counts())#acc to results all the repos are non froks
+#archived repos
+print(df["archived"].value_counts())
+print("Average repository size:", df["size_kb"].mean(), "KB")
+print("Median repository size:", df["size_kb"].median(), "KB")
