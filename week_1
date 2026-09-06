@@ -41,7 +41,7 @@ print(df.describe())
 top_repos=df.sort_values("stars",ascending=False).head(10)#arrranging values from high to low
 print(top_repos[["name","stars"]])
 #turning our result into a visual rep using matplotlib
-"""import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 lang_counts=df["language"].value_counts().head(10)
 lang_counts.plot(kind="bar")
 plt.title("top programming languages")
@@ -55,7 +55,7 @@ plt.scatter(df["stars"],df["forks"])
 plt.title("stars vs forks")
 plt.xlabel("Number of Stars")
 plt.ylabel("Number of Forks")
-plt.show()"""
+plt.show()
 # which year has the most repository created
 df["Created_year"]=df["created_at"].dt.year
 print(df["Created_year"].value_counts().sort_index())
