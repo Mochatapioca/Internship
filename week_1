@@ -68,3 +68,68 @@ print(df["is_fork"].value_counts())#acc to results all the repos are non froks
 print(df["archived"].value_counts())
 print("Average repository size:", df["size_kb"].mean(), "KB")
 print("Median repository size:", df["size_kb"].median(), "KB")
+#WEEK -2 ************************************************
+#visualization1-how the ecosystem developed over time.
+df["Created_year"]=df["created_at"].dt.year
+year_counts=df["Created_year"].value_counts().sort_index()
+print(year_counts)
+year_counts.plot(kind="line",marker='o')
+plt.title("growth of discord github repositories over time")
+plt.xlabel("year")
+plt.ylabel("No. of Repositories created")
+plt.tight_layout()
+plt.show()
+
+# visualization 2: distribution of stars
+bins = [0, 10, 50, 100, 500, 1000, 5000, float("inf")]
+labels = ["0–10", "11–50", "51–100", "101–500",
+          "501–1,000", "1,001–5,000", "5,001+"]
+
+star_ranges = pd.cut(
+    df["stars"],
+    bins=bins,
+    labels=labels,
+    include_lowest=True
+)
+star_counts = star_ranges.value_counts().sort_index()
+print(star_counts)
+star_counts.plot(kind="bar")
+plt.title("Distribution of GitHub Stars")
+plt.xlabel("Star Range")
+plt.ylabel("Number of Repositories")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+#visualizaiton3:
+official_counts = df["is_official_discord"].value_counts()
+
+print(official_counts)
+official_counts.plot(kind="bar")
+
+plt.title("Official vs Non-Official Discord Repositories")
+plt.xlabel("Repository Type")
+plt.ylabel("Number of Repositories")
+
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+#visualization 4: Repository Age vs Popularity
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    df["repo_age_days"],
+    df["stars"],
+    alpha=0.5
+)
+
+# Stars have a very wide range, so use logarithmic scale
+plt.yscale("log")
+
+plt.title("Repository Age vs Popularity")
+plt.xlabel("Repository Age (days)")
+plt.ylabel("Number of Stars (log scale)")
+
+plt.tight_layout()
+plt.show()
+
