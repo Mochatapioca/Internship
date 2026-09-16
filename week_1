@@ -132,4 +132,84 @@ plt.ylabel("Number of Stars (log scale)")
 
 plt.tight_layout()
 plt.show()
+#week3
+import seaborn as sns
+from scipy import stats
 
+# Load the dataset
+df = pd.read_csv("yi/discord_ecosystem_2026.csv")
+
+# Display basic information
+print("Dataset shape:", df.shape)
+
+print("\nColumn names:")
+print(df.columns.tolist())
+
+print("\nFirst 5 rows:")
+print(df.head())
+
+print("\nData types:")
+print(df.dtypes)
+
+print("\nMissing values:")
+print(df.isnull().sum())
+
+print("\nDuplicate rows:", df.duplicated().sum())
+print(df.columns.tolist())
+official_stars = df[df["is_official_discord"] == True]["stars"]
+
+non_official_stars = df[df["is_official_discord"] == False]["stars"]
+
+print("Official repositories:", len(official_stars))
+print("Non-official repositories:", len(non_official_stars))
+
+print("\nOfficial repositories - average stars:",
+      official_stars.mean())
+
+print("Non-official repositories - average stars:",
+      non_official_stars.mean())
+
+sns.boxplot(
+    x="is_official_discord",
+    y="stars",
+    data=df
+)
+
+plt.xlabel("Official Discord Repository")
+plt.ylabel("Number of Stars")
+plt.title("Stars of Official vs Non-Official Discord Repositories")
+
+plt.show()
+t_stat, p_value = stats.ttest_ind(
+    official_stars,
+    non_official_stars,
+    equal_var=False
+)
+
+print("t-statistic:", t_stat)
+print("p-value:", p_value)
+n1 = len(official_stars)
+n2 = len(non_official_stars)
+
+mean_diff = official_stars.mean() - non_official_stars.mean()
+import numpy as np
+
+s1 = official_stars.var(ddof=1)
+s2 = non_official_stars.var(ddof=1)
+
+se = np.sqrt(s1/n1 + s2/n2)
+
+df_welch = ((s1/n1 + s2/n2)**2) / (
+    ((s1/n1)**2)/(n1-1) +
+    ((s2/n2)**2)/(n2-1)
+)
+
+ci = stats.t.interval(
+    0.95,
+    df=df_welch,
+    loc=mean_diff,
+    scale=se
+)
+
+print("Mean difference:", mean_diff)
+print("95% Confidence Interval:", ci)
