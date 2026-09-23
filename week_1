@@ -213,3 +213,126 @@ ci = stats.t.interval(
 
 print("Mean difference:", mean_diff)
 print("95% Confidence Interval:", ci)
+#week 4*****************************************************
+# Features and target
+
+X = df[[
+    "stars",
+    "forks",
+    "watchers",
+    "open_issues",
+    "repo_age_days",
+    "days_since_last_push",
+    "size_kb"
+]]
+
+y = df["archived"]
+
+print("Features:")
+print(X.head())
+
+print("\nTarget:")
+print(y.head())
+
+print("\nTarget distribution:")
+print(y.value_counts())
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Training data:", X_train.shape)
+print("Testing data:", X_test.shape)
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+print("Training data after scaling:")
+print(X_train_scaled[:5])
+from sklearn.linear_model import LogisticRegression
+
+# Create the model
+model = LogisticRegression(random_state=42)
+
+# Train the model
+model.fit(X_train_scaled, y_train)
+
+print("Model training completed successfully.")
+# Make predictions on the test data
+y_pred = model.predict(X_test_scaled)
+
+print("Predictions:")
+print(y_pred[:20])
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+print("Accuracy :", accuracy)
+print("Precision:", precision)
+print("Recall   :", recall)
+print("F1 Score :", f1)
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+# Create confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+print("Confusion Matrix:")
+print(cm)
+
+# Display confusion matrix
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=["Not Archived", "Archived"]
+)
+
+disp.plot()
+plt.title("Confusion Matrix - Logistic Regression")
+plt.tight_layout()
+plt.show()
+from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+# Get probability of the repository being archived
+y_prob = model.predict_proba(X_test_scaled)[:, 1]
+
+# Calculate ROC values
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+
+# Calculate AUC
+auc = roc_auc_score(y_test, y_prob)
+
+# Plot ROC curve
+plt.figure(figsize=(7, 5))
+
+plt.plot(fpr, tpr, label=f"Logistic Regression (AUC = {auc:.2f})")
+plt.plot([0, 1], [0, 1], linestyle="--")
+
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve - Logistic Regression")
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+print("AUC:", auc)
+# Compare training and testing accuracy
+
+train_pred = model.predict(X_train_scaled)
+
+train_accuracy = accuracy_score(y_train, train_pred)
+test_accuracy = accuracy_score(y_test, y_pred)
+
+print("Training Accuracy:", train_accuracy)
+print("Testing Accuracy:", test_accuracy)
