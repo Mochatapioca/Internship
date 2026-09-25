@@ -336,3 +336,112 @@ test_accuracy = accuracy_score(y_test, y_pred)
 
 print("Training Accuracy:", train_accuracy)
 print("Testing Accuracy:", test_accuracy)
+#week_5***********************************
+#  Project Synthesis
+
+project_summary = {
+    "Total Repositories": 1735,
+    "Official Repositories": 88,
+    "Non-Official Repositories": 1647,
+    "Archived Repositories": 297,
+    "Non-Archived Repositories": 1438,
+    "Inactive Repositories (>365 days)": 1055,
+
+    "ML Model": "Logistic Regression",
+    "Training Accuracy": 82.42,
+    "Testing Accuracy": 83.86,
+    "Precision": 60.00,
+    "Recall": 15.25,
+    "F1 Score": 24.32,
+    "ROC-AUC": 0.77
+}
+
+print("WEEK 5 PROJECT SUMMARY")
+print("-" * 40)
+
+for key, value in project_summary.items():
+    print(f"{key}: {value}")
+results_table = pd.DataFrame({
+    "Category": [
+        "Dataset",
+        "Dataset",
+        "Dataset",
+        "Dataset",
+        "Activity",
+        "Statistical Analysis",
+        "Machine Learning",
+        "Machine Learning",
+        "Machine Learning",
+        "Machine Learning",
+        "Machine Learning",
+        "Machine Learning"
+    ],
+    "Metric": [
+        "Total Repositories",
+        "Official Repositories",
+        "Archived Repositories",
+        "Non-Archived Repositories",
+        "Inactive Repositories (>365 days)",
+        "Official vs Non-Official Stars",
+        "Model",
+        "Testing Accuracy",
+        "Precision",
+        "Recall",
+        "F1 Score",
+        "ROC-AUC"
+    ],
+    "Result": [
+        "1,735",
+        "88",
+        "297",
+        "1,438",
+        "1,055",
+        "Welch's t-test",
+        "Logistic Regression",
+        "83.86%",
+        "60.00%",
+        "15.25%",
+        "24.32%",
+        "0.77"
+    ]
+})
+
+print(results_table)
+metrics = ["Accuracy", "Precision", "Recall", "F1 Score"]
+values = [83.86, 60.00, 15.25, 24.32]
+
+plt.figure(figsize=(8, 5))
+plt.bar(metrics, values)
+
+plt.title("Logistic Regression Performance")
+plt.xlabel("Evaluation Metric")
+plt.ylabel("Score (%)")
+plt.ylim(0, 100)
+
+plt.tight_layout()
+plt.show()
+categories = [
+    "Official",
+    "Non-Official",
+    "Archived",
+    "Non-Archived",
+    "Inactive"
+]
+
+values = [
+    88,
+    1647,
+    297,
+    1438,
+    1055
+]
+
+plt.figure(figsize=(9, 5))
+plt.bar(categories, values)
+
+plt.title("Summary of GitHub Repository Characteristics")
+plt.xlabel("Repository Category")
+plt.ylabel("Number of Repositories")
+
+plt.tight_layout()
+plt.show()
